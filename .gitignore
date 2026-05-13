@@ -22,3 +22,33 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Vite files
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+.vite/
+
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# Miscellaneous
+*.tgz
+*.zip
+*.tar.gz
+*.bak
+*.backup
+*.tmp
+*.cache
+*.pid
+*.seed
+*.log
+*.gz
+*.sql
+*.sqlite
+*.sqlite3
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local

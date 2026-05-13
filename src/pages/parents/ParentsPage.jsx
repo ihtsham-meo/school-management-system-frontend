@@ -1,49 +1,35 @@
 import React, { useState } from "react";
-import { staffData, departmentsData, staffStatusOptions } from "../../constants/dummyData";
 import {
   Search, Plus, Download, Eye, Pencil, Trash2,
-  Briefcase, ChevronLeft, ChevronRight, Phone, Mail,
+  Users, ChevronLeft, ChevronRight,
+  CheckCircle, XCircle, Wallet, Phone, Mail,
 } from "lucide-react";
-
-// // ── Sample Data ──────────────────────────────────────────
-// const staffData = [
-//   { id: 1, name: "Dr. Khalid Mehmood", role: "Principal", department: "Administration", phone: "0300-1111111", email: "khalid@school.com", salary: "₨ 120,000", status: "Active", joining: "Jan 2018", avatar: "K" },
-//   { id: 2, name: "Mrs. Rabia Tariq", role: "Teacher", department: "Mathematics", phone: "0301-2222222", email: "rabia@school.com", salary: "₨ 65,000", status: "Active", joining: "Mar 2019", avatar: "R" },
-//   { id: 3, name: "Mr. Imran Qureshi", role: "Teacher", department: "Physics", phone: "0302-3333333", email: "imran@school.com", salary: "₨ 60,000", status: "On Leave", joining: "Jun 2020", avatar: "I" },
-//   { id: 4, name: "Ms. Sana Baig", role: "Coordinator", department: "ComputerScience", phone: "0303-4444444", email: "sana@school.com", salary: "₨ 75,000", status: "Active", joining: "Aug 2017", avatar: "S" },
-//   { id: 5, name: "Mr. Tariq Jameel", role: "Teacher", department: "English", phone: "0304-5555555", email: "tariq@school.com", salary: "₨ 58,000", status: "Active", joining: "Sep 2021", avatar: "T" },
-//   { id: 6, name: "Mrs. Nadia Shah", role: "Teacher", department: "Urdu", phone: "0305-6666666", email: "nadia@school.com", salary: "₨ 55,000", status: "Inactive", joining: "Feb 2022", avatar: "N" },
-//   { id: 7, name: "Mr. Asif Raza", role: "Admin Officer", department: "Administration", phone: "0306-7777777", email: "asif@school.com", salary: "₨ 50,000", status: "Active", joining: "Apr 2020", avatar: "A" },
-//   { id: 8, name: "Ms. Huma Nawaz", role: "Teacher", department: "Chemistry", phone: "0307-8888888", email: "huma@school.com", salary: "₨ 62,000", status: "Active", joining: "Jul 2019", avatar: "H" },
-// ];
+import { parentsData } from "../../constants/dummyData";
 
 const statusStyle = {
   Active: "bg-green-500/10 text-green-400 border border-green-500/20",
-  "On Leave": "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20",
   Inactive: "bg-red-500/10 text-red-400 border border-red-500/20",
 };
 
-const departments = ["All", "Administration", "Mathematics", "Physics", "Computer Science", "English", "Urdu", "Chemistry"];
-const statuses = ["All", "Active", "On Leave", "Inactive"];
-
-const StaffPage = () => {
+const ParentsPage = () => {
   const [search, setSearch] = useState("");
-  const [deptFilter, setDeptFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 5;
+  const perPage = 6;
 
-  const filtered = staffData.filter((s) => {
+  const filtered = parentsData.filter((p) => {
     const matchSearch =
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.role.toLowerCase().includes(search.toLowerCase());
-    const matchDept = deptFilter === "All" || s.department === deptFilter;
-    const matchStatus = statusFilter === "All" || s.status === statusFilter;
-    return matchSearch && matchDept && matchStatus;
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.email.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = statusFilter === "All" || p.status === statusFilter;
+    return matchSearch && matchStatus;
   });
 
   const totalPages = Math.ceil(filtered.length / perPage);
   const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
+
+  const totalChildren = parentsData.reduce((acc, p) => acc + p.children.length, 0);
+  const totalFeeCollected = parentsData.filter(p => p.paidFee !== "₨ 0").length;
 
   return (
     <div className="space-y-5">
@@ -51,26 +37,31 @@ const StaffPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">Staff</h1>
-          <p className="text-white/30 text-sm mt-0.5">{staffData.length} total staff members</p>
+          <h1 className="text-2xl font-bold text-white">Parents</h1>
+          <p className="text-white/30 text-sm mt-0.5">{parentsData.length} registered parents</p>
         </div>
         <button className="flex items-center gap-2 bg-white/[0.08] hover:bg-white/[0.12] border border-white/[0.10] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-all">
           <Plus size={15} />
-          Add Staff
+          Add Parent
         </button>
       </div>
 
-      {/* Stats Row */}
+      {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Staff", value: staffData.length, color: "text-white/70" },
-          { label: "Active", value: staffData.filter(s => s.status === "Active").length, color: "text-green-400" },
-          { label: "On Leave", value: staffData.filter(s => s.status === "On Leave").length, color: "text-yellow-400" },
-          { label: "Inactive", value: staffData.filter(s => s.status === "Inactive").length, color: "text-red-400" },
+          { label: "Total Parents", value: parentsData.length, color: "text-white/70", icon: Users },
+          { label: "Total Children", value: totalChildren, color: "text-blue-400", icon: Users },
+          { label: "Fee Cleared", value: totalFeeCollected, color: "text-green-400", icon: CheckCircle },
+          { label: "Inactive", value: parentsData.filter(p => p.status === "Inactive").length, color: "text-red-400", icon: XCircle },
         ].map((stat, i) => (
-          <div key={i} className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3">
-            <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-            <p className="text-white/30 text-xs mt-0.5">{stat.label}</p>
+          <div key={i} className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0">
+              <stat.icon size={16} className={stat.color} />
+            </div>
+            <div>
+              <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+              <p className="text-white/30 text-xs">{stat.label}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -81,25 +72,20 @@ const StaffPage = () => {
           <Search size={14} className="text-white/25 shrink-0" />
           <input
             type="text"
-            placeholder="Search by name or role..."
+            placeholder="Search by name or email..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
             className="bg-transparent text-sm text-white placeholder:text-white/20 outline-none w-full"
           />
         </div>
         <select
-          value={deptFilter}
-          onChange={(e) => { setDeptFilter(e.target.value); setCurrentPage(1); }}
-          className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
-        >
-          {departments.map((d) => <option key={d} value={d} className="bg-[#0a0a0f]">{d === "All" ? "All Departments" : d}</option>)}
-        </select>
-        <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
           className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
         >
-          {statuses.map((s) => <option key={s} value={s} className="bg-[#0a0a0f]">{s === "All" ? "All Statuses" : s}</option>)}
+          {["All", "Active", "Inactive"].map((s) => (
+            <option key={s} value={s} className="bg-[#0a0a0f]">{s === "All" ? "All Statuses" : s}</option>
+          ))}
         </select>
         <button className="flex items-center gap-2 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-white/50 hover:text-white/80 text-sm px-4 py-2.5 rounded-xl transition-all">
           <Download size={14} />
@@ -113,7 +99,7 @@ const StaffPage = () => {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                {["Staff Member", "Role", "Department", "Contact", "Salary", "Joining", "Status", "Actions"].map((h) => (
+                {["Parent", "Contact", "Children", "Total Fee", "Paid Fee", "Status", "Actions"].map((h) => (
                   <th key={h} className="text-left text-[11px] font-semibold text-white/25 uppercase tracking-wider px-5 py-3.5">
                     {h}
                   </th>
@@ -121,51 +107,64 @@ const StaffPage = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.04]">
-              {paginated.length > 0 ? paginated.map((s) => (
-                <tr key={s.id} className="hover:bg-white/[0.02] transition-colors group">
+              {paginated.length > 0 ? paginated.map((p) => (
+                <tr key={p.id} className="hover:bg-white/[0.02] transition-colors group">
 
-                  {/* Staff Member */}
+                  {/* Parent */}
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/60 text-sm font-semibold shrink-0">
-                        {s.avatar}
+                      <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/60 text-sm font-semibold shrink-0">
+                        {p.avatar}
                       </div>
                       <div>
-                        <p className="text-white/80 text-sm font-medium">{s.name}</p>
-                        <p className="text-white/25 text-xs">{s.email}</p>
+                        <p className="text-white/80 text-sm font-medium">{p.name}</p>
+                        <p className="text-white/25 text-xs">{p.address}</p>
                       </div>
                     </div>
                   </td>
 
-                  {/* Role */}
-                  <td className="px-5 py-4">
-                    <span className="text-white/50 text-sm">{s.role}</span>
-                  </td>
-
-                  {/* Department */}
-                  <td className="px-5 py-4">
-                    <span className="text-white/40 text-sm">{s.department}</span>
-                  </td>
-
                   {/* Contact */}
                   <td className="px-5 py-4">
-                    <p className="text-white/40 text-xs">{s.phone}</p>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5">
+                        <Phone size={11} className="text-white/25" />
+                        <span className="text-white/40 text-xs">{p.phone}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Mail size={11} className="text-white/25" />
+                        <span className="text-white/40 text-xs">{p.email}</span>
+                      </div>
+                    </div>
                   </td>
 
-                  {/* Salary */}
+                  {/* Children */}
                   <td className="px-5 py-4">
-                    <span className="text-white/60 text-sm font-medium">{s.salary}</span>
+                    <div className="space-y-1">
+                      {p.children.map((child, i) => (
+                        <p key={i} className="text-white/50 text-xs">{child}</p>
+                      ))}
+                    </div>
                   </td>
 
-                  {/* Joining */}
+                  {/* Total Fee */}
                   <td className="px-5 py-4">
-                    <span className="text-white/30 text-xs">{s.joining}</span>
+                    <span className="text-white/60 text-sm font-medium">{p.totalFee}</span>
+                  </td>
+
+                  {/* Paid Fee */}
+                  <td className="px-5 py-4">
+                    <div className="flex items-center gap-1.5">
+                      <Wallet size={12} className={p.paidFee === p.totalFee ? "text-green-400" : "text-red-400"} />
+                      <span className={`text-sm font-medium ${p.paidFee === p.totalFee ? "text-green-400" : "text-red-400"}`}>
+                        {p.paidFee}
+                      </span>
+                    </div>
                   </td>
 
                   {/* Status */}
                   <td className="px-5 py-4">
-                    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${statusStyle[s.status]}`}>
-                      {s.status}
+                    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${statusStyle[p.status]}`}>
+                      {p.status}
                     </span>
                   </td>
 
@@ -186,9 +185,9 @@ const StaffPage = () => {
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={8} className="px-5 py-12 text-center">
-                    <Briefcase size={32} className="text-white/10 mx-auto mb-3" />
-                    <p className="text-white/25 text-sm">No staff members found</p>
+                  <td colSpan={7} className="px-5 py-12 text-center">
+                    <Users size={32} className="text-white/10 mx-auto mb-3" />
+                    <p className="text-white/25 text-sm">No parents found</p>
                   </td>
                 </tr>
               )}
@@ -199,7 +198,7 @@ const StaffPage = () => {
         {/* Pagination */}
         <div className="flex items-center justify-between px-5 py-3.5 border-t border-white/[0.06]">
           <p className="text-white/25 text-xs">
-            Showing {Math.min((currentPage - 1) * perPage + 1, filtered.length)}–{Math.min(currentPage * perPage, filtered.length)} of {filtered.length} staff
+            Showing {Math.min((currentPage - 1) * perPage + 1, filtered.length)}–{Math.min(currentPage * perPage, filtered.length)} of {filtered.length} parents
           </p>
           <div className="flex items-center gap-1.5">
             <button
@@ -236,4 +235,4 @@ const StaffPage = () => {
   );
 };
 
-export default StaffPage;
+export default ParentsPage;
