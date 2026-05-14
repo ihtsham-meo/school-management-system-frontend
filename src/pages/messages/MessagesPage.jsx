@@ -2,56 +2,73 @@ import React, { useState } from "react";
 import {
   Search,
   Plus,
-  Download,
+  Send,
   Eye,
-  Pencil,
   Trash2,
-  Archive,
+  Mail,
+  MessageSquare,
+  Bell,
+  Phone,
   ChevronLeft,
   ChevronRight,
   CheckCircle,
-  AlertTriangle,
+  Clock,
   XCircle,
-  Package,
+  Calendar,
+  Users,
 } from "lucide-react";
-import { inventoryData } from "../../constants/dummyData";
+import { messagesData } from "../../constants/dummyData";
 
 const statusStyle = {
-  "In Stock": "bg-green-500/10 text-green-400 border border-green-500/20",
-  "Low Stock": "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20",
-  "Out of Stock": "bg-red-500/10 text-red-400 border border-red-500/20",
+  Sent: "bg-green-500/10 text-green-400 border border-green-500/20",
+  Failed: "bg-red-500/10 text-red-400 border border-red-500/20",
+  Draft: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20",
+  Scheduled: "bg-blue-500/10 text-blue-400 border border-blue-500/20",
 };
 
 const statusIcon = {
-  "In Stock": CheckCircle,
-  "Low Stock": AlertTriangle,
-  "Out of Stock": XCircle,
+  Sent: CheckCircle,
+  Failed: XCircle,
+  Draft: Clock,
+  Scheduled: Calendar,
 };
 
-const categories = [
-  "All",
-  "Stationery",
-  "Electronics",
-  "Furniture",
-  "Sports",
-  "Medical",
+const typeStyle = {
+  SMS: "bg-green-500/10 text-green-400 border border-green-500/20",
+  WhatsApp: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+  Email: "bg-blue-500/10 text-blue-400 border border-blue-500/20",
+  Push: "bg-purple-500/10 text-purple-400 border border-purple-500/20",
+};
+
+const typeIcon = {
+  SMS: Phone,
+  WhatsApp: MessageSquare,
+  Email: Mail,
+  Push: Bell,
+};
+
+const tabs = [
+  { id: "all", label: "All Messages" },
+  { id: "SMS", label: "SMS" },
+  { id: "WhatsApp", label: "WhatsApp" },
+  { id: "Email", label: "Email" },
+  { id: "Push", label: "Push" },
 ];
 
-const InventoryPage = () => {
+const MessagesPage = () => {
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [activeTab, setActiveTab] = useState("all");
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 6;
+  const perPage = 5;
 
-  const filtered = inventoryData.filter((i) => {
+  const filtered = messagesData.filter((m) => {
     const matchSearch =
-      i.item.toLowerCase().includes(search.toLowerCase()) ||
-      i.supplier.toLowerCase().includes(search.toLowerCase());
-    const matchCategory =
-      categoryFilter === "All" || i.category === categoryFilter;
-    const matchStatus = statusFilter === "All" || i.status === statusFilter;
-    return matchSearch && matchCategory && matchStatus;
+      m.subject.toLowerCase().includes(search.toLowerCase()) ||
+      m.recipient.toLowerCase().includes(search.toLowerCase());
+    const matchTab = activeTab === "all" || m.type === activeTab;
+    const matchStatus = statusFilter === "All" || m.status === statusFilter;
+    return matchSearch && matchTab && matchStatus;
   });
 
   const totalPages = Math.ceil(filtered.length / perPage);
@@ -65,14 +82,14 @@ const InventoryPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">Inventory</h1>
+          <h1 className="text-2xl font-bold text-white">Messages</h1>
           <p className="text-white/30 text-sm mt-0.5">
-            {inventoryData.length} items in inventory
+            {messagesData.length} messages total
           </p>
         </div>
         <button className="flex items-center gap-2 bg-white/[0.08] hover:bg-white/[0.12] border border-white/[0.10] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-all">
-          <Plus size={15} />
-          Add Item
+          <Send size={14} />
+          Send Message
         </button>
       </div>
 
@@ -80,29 +97,36 @@ const InventoryPage = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           {
-            label: "Total Items",
-            value: inventoryData.length,
-            color: "text-white/70",
-            icon: Package,
-          },
-          {
-            label: "In Stock",
-            value: inventoryData.filter((i) => i.status === "In Stock").length,
+            label: "SMS Sent",
+            value: messagesData.filter(
+              (m) => m.type === "SMS" && m.status === "Sent",
+            ).length,
             color: "text-green-400",
-            icon: CheckCircle,
+            icon: Phone,
           },
           {
-            label: "Low Stock",
-            value: inventoryData.filter((i) => i.status === "Low Stock").length,
-            color: "text-yellow-400",
-            icon: AlertTriangle,
+            label: "WhatsApp",
+            value: messagesData.filter(
+              (m) => m.type === "WhatsApp" && m.status === "Sent",
+            ).length,
+            color: "text-emerald-400",
+            icon: MessageSquare,
           },
           {
-            label: "Out of Stock",
-            value: inventoryData.filter((i) => i.status === "Out of Stock")
-              .length,
-            color: "text-red-400",
-            icon: XCircle,
+            label: "Emails",
+            value: messagesData.filter(
+              (m) => m.type === "Email" && m.status === "Sent",
+            ).length,
+            color: "text-blue-400",
+            icon: Mail,
+          },
+          {
+            label: "Push Sent",
+            value: messagesData.filter(
+              (m) => m.type === "Push" && m.status === "Sent",
+            ).length,
+            color: "text-purple-400",
+            icon: Bell,
           },
         ].map((stat, i) => (
           <div
@@ -120,13 +144,34 @@ const InventoryPage = () => {
         ))}
       </div>
 
+      {/* Tabs */}
+      <div className="flex items-center gap-1 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1 w-fit overflow-x-auto">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => {
+              setActiveTab(tab.id);
+              setCurrentPage(1);
+            }}
+            className={`px-4 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap
+              ${
+                activeTab === tab.id
+                  ? "bg-white/[0.08] text-white"
+                  : "text-white/30 hover:text-white/60"
+              }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex items-center gap-2 flex-1 bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-2.5">
           <Search size={14} className="text-white/25 shrink-0" />
           <input
             type="text"
-            placeholder="Search by item or supplier..."
+            placeholder="Search by subject or recipient..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -136,20 +181,6 @@ const InventoryPage = () => {
           />
         </div>
         <select
-          value={categoryFilter}
-          onChange={(e) => {
-            setCategoryFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
-        >
-          {categories.map((c) => (
-            <option key={c} value={c} className="bg-[#0a0a0f]">
-              {c === "All" ? "All Categories" : c}
-            </option>
-          ))}
-        </select>
-        <select
           value={statusFilter}
           onChange={(e) => {
             setStatusFilter(e.target.value);
@@ -157,16 +188,12 @@ const InventoryPage = () => {
           }}
           className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
         >
-          {["All", "In Stock", "Low Stock", "Out of Stock"].map((s) => (
+          {["All", "Sent", "Failed", "Draft", "Scheduled"].map((s) => (
             <option key={s} value={s} className="bg-[#0a0a0f]">
               {s === "All" ? "All Statuses" : s}
             </option>
           ))}
         </select>
-        <button className="flex items-center gap-2 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-white/50 hover:text-white/80 text-sm px-4 py-2.5 rounded-xl transition-all">
-          <Download size={14} />
-          Export
-        </button>
       </div>
 
       {/* Table */}
@@ -176,13 +203,12 @@ const InventoryPage = () => {
             <thead>
               <tr className="border-b border-white/[0.06]">
                 {[
-                  "Item",
-                  "Category",
-                  "Quantity",
-                  "Min Stock",
-                  "Unit Price",
-                  "Supplier",
-                  "Last Updated",
+                  "Subject",
+                  "Recipient",
+                  "Type",
+                  "Message",
+                  "Recipients Count",
+                  "Date",
                   "Status",
                   "Actions",
                 ].map((h) => (
@@ -197,76 +223,73 @@ const InventoryPage = () => {
             </thead>
             <tbody className="divide-y divide-white/[0.04]">
               {paginated.length > 0 ? (
-                paginated.map((item) => {
-                  const Icon = statusIcon[item.status];
+                paginated.map((msg) => {
+                  const StatusIcon = statusIcon[msg.status];
+                  const TypeIcon = typeIcon[msg.type];
                   return (
                     <tr
-                      key={item.id}
+                      key={msg.id}
                       className="hover:bg-white/[0.02] transition-colors group"
                     >
-                      {/* Item */}
+                      {/* Subject */}
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
-                            <Archive size={13} className="text-white/40" />
+                            <TypeIcon size={13} className="text-white/40" />
                           </div>
                           <p className="text-white/80 text-sm font-medium">
-                            {item.item}
+                            {msg.subject}
                           </p>
                         </div>
                       </td>
 
-                      {/* Category */}
+                      {/* Recipient */}
                       <td className="px-5 py-4">
                         <span className="text-white/50 text-sm">
-                          {item.category}
+                          {msg.recipient}
                         </span>
                       </td>
 
-                      {/* Quantity */}
+                      {/* Type */}
                       <td className="px-5 py-4">
                         <span
-                          className={`text-sm font-semibold ${item.quantity === 0 ? "text-red-400" : item.quantity <= item.minStock ? "text-yellow-400" : "text-white/70"}`}
+                          className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${typeStyle[msg.type]}`}
                         >
-                          {item.quantity}
+                          {msg.type}
                         </span>
                       </td>
 
-                      {/* Min Stock */}
+                      {/* Message */}
+                      <td className="px-5 py-4">
+                        <p className="text-white/30 text-xs truncate max-w-[200px]">
+                          {msg.message}
+                        </p>
+                      </td>
+
+                      {/* Count */}
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-1.5">
+                          <Users size={12} className="text-white/25" />
+                          <span className="text-white/50 text-sm">
+                            {msg.count.toLocaleString()}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Date */}
                       <td className="px-5 py-4">
                         <span className="text-white/30 text-sm">
-                          {item.minStock}
-                        </span>
-                      </td>
-
-                      {/* Unit Price */}
-                      <td className="px-5 py-4">
-                        <span className="text-white/60 text-sm font-medium">
-                          {item.price}
-                        </span>
-                      </td>
-
-                      {/* Supplier */}
-                      <td className="px-5 py-4">
-                        <span className="text-white/40 text-sm">
-                          {item.supplier}
-                        </span>
-                      </td>
-
-                      {/* Last Updated */}
-                      <td className="px-5 py-4">
-                        <span className="text-white/30 text-sm">
-                          {item.lastUpdated}
+                          {msg.date}
                         </span>
                       </td>
 
                       {/* Status */}
                       <td className="px-5 py-4">
                         <div
-                          className={`flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full w-fit ${statusStyle[item.status]}`}
+                          className={`flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full w-fit ${statusStyle[msg.status]}`}
                         >
-                          <Icon size={11} />
-                          {item.status}
+                          <StatusIcon size={11} />
+                          {msg.status}
                         </div>
                       </td>
 
@@ -277,7 +300,7 @@ const InventoryPage = () => {
                             <Eye size={13} />
                           </button>
                           <button className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/70 transition-all">
-                            <Pencil size={13} />
+                            <Send size={13} />
                           </button>
                           <button className="w-7 h-7 rounded-lg bg-red-500/[0.06] hover:bg-red-500/[0.12] border border-red-500/[0.15] flex items-center justify-center text-red-400/60 hover:text-red-400 transition-all">
                             <Trash2 size={13} />
@@ -289,9 +312,9 @@ const InventoryPage = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan={9} className="px-5 py-12 text-center">
-                    <Archive size={32} className="text-white/10 mx-auto mb-3" />
-                    <p className="text-white/25 text-sm">No items found</p>
+                  <td colSpan={8} className="px-5 py-12 text-center">
+                    <Mail size={32} className="text-white/10 mx-auto mb-3" />
+                    <p className="text-white/25 text-sm">No messages found</p>
                   </td>
                 </tr>
               )}
@@ -304,7 +327,7 @@ const InventoryPage = () => {
           <p className="text-white/25 text-xs">
             Showing {Math.min((currentPage - 1) * perPage + 1, filtered.length)}
             –{Math.min(currentPage * perPage, filtered.length)} of{" "}
-            {filtered.length} items
+            {filtered.length} messages
           </p>
           <div className="flex items-center gap-1.5">
             <button
@@ -337,4 +360,4 @@ const InventoryPage = () => {
   );
 };
 
-export default InventoryPage;
+export default MessagesPage;

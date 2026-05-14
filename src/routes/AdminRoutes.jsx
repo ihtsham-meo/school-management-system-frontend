@@ -13,9 +13,20 @@ import NoticeBoardPage from "../pages/noticeboard/NoticeBoardPage";
 import SettingsPage from "../pages/settings/SettingsPage";
 import AdmissionsPage from "../pages/admissions/AdmissionsPage";
 import ParentsPage from "../pages/parents/ParentsPage";
-import TransportPage from "../pages/transport/TransportPage"; 
+import TransportPage from "../pages/transport/TransportPage";
 import InventoryPage from "../pages/inventory/InventoryPage";
 import ReportsPage from "../pages/reports/ReportsPage";
+import IDCardsPage from "../pages/idcards/IDCardsPage";
+import CertificatesPage from "../pages/certificates/CertificatesPage";
+import WebsitePage from "../pages/website/WebsitePage";
+import ExamsPage from "../pages/exams/ExamsPage";
+import TestsPage from "../pages/tests/TestsPage";
+import DiaryPage from "../pages/diary/DiaryPage";
+import MessagesPage from "../pages/messages/MessagesPage";
+import StudyMaterialsPage from "../pages/studymaterials/StudyMaterialsPage";
+import OnlineClassesPage from "../pages/onlineclasses/OnlineClassesPage";
+import ExpensesPage from "../pages/expenses/ExpensesPage";
+
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -35,6 +46,19 @@ const AdminRoutes = () => {
         <Route path="transport" element={<TransportPage />} />
         <Route path="inventory" element={<InventoryPage />} />
         <Route path="reports" element={<ReportsPage />} />
+        <Route path="id-cards" element={<IDCardsPage />} />
+        <Route path="certificates" element={<CertificatesPage />} />
+        <Route path="website" element={<WebsitePage />} />
+        <Route path="exams" element={<ExamsPage />} />
+        <Route path="tests" element={<TestsPage />} />
+        <Route path="diary" element={<DiaryPage />} />
+        <Route path="messages/sms" element={<MessagesPage />} />
+        <Route path="messages/email" element={<MessagesPage />} />
+        <Route path="messages/whatsapp" element={<MessagesPage />} />
+        <Route path="messages/push" element={<MessagesPage />} />
+        <Route path="study-materials" element={<StudyMaterialsPage />} />
+        <Route path="online-classes" element={<OnlineClassesPage />} />
+        <Route path="expenses" element={<ExpensesPage />} />
       </Route>
     </Routes>
   );

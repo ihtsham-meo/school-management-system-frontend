@@ -1,0 +1,451 @@
+import React, { useState } from "react";
+import {
+  Search,
+  Plus,
+  Download,
+  Eye,
+  Trash2,
+  Archive,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  Image,
+  Presentation,
+  File,
+  TrendingDown,
+  BookOpen,
+  CheckCircle,
+  Clock,
+} from "lucide-react";
+import { studyMaterialsData, classOptions } from "../../constants/dummyData";
+
+const statusStyle = {
+  Published: "bg-green-500/10 text-green-400 border border-green-500/20",
+  Draft: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20",
+};
+
+const typeStyle = {
+  PDF: "bg-red-500/10 text-red-400 border border-red-500/20",
+  Word: "bg-blue-500/10 text-blue-400 border border-blue-500/20",
+  Image: "bg-purple-500/10 text-purple-400 border border-purple-500/20",
+  PPT: "bg-orange-500/10 text-orange-400 border border-orange-500/20",
+  Video: "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20",
+};
+
+const typeIcon = {
+  PDF: FileText,
+  Word: FileText,
+  Image: Image,
+  PPT: Archive,
+  Video: Archive,
+};
+
+const StudyMaterialsPage = () => {
+  const [search, setSearch] = useState("");
+  const [classFilter, setClassFilter] = useState("All");
+  const [typeFilter, setTypeFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [viewMode, setViewMode] = useState("grid");
+  const [currentPage, setCurrentPage] = useState(1);
+  const perPage = 6;
+
+  const types = ["All", "PDF", "Word", "Image", "PPT", "Video"];
+
+  const filtered = studyMaterialsData.filter((m) => {
+    const matchSearch =
+      m.title.toLowerCase().includes(search.toLowerCase()) ||
+      m.subject.toLowerCase().includes(search.toLowerCase());
+    const matchClass = classFilter === "All" || m.class === classFilter;
+    const matchType = typeFilter === "All" || m.type === typeFilter;
+    const matchStatus = statusFilter === "All" || m.status === statusFilter;
+    return matchSearch && matchClass && matchType && matchStatus;
+  });
+
+  const totalPages = Math.ceil(filtered.length / perPage);
+  const paginated = filtered.slice(
+    (currentPage - 1) * perPage,
+    currentPage * perPage,
+  );
+  const totalDownloads = studyMaterialsData.reduce(
+    (acc, m) => acc + m.downloads,
+    0,
+  );
+
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Study Materials</h1>
+          <p className="text-white/30 text-sm mt-0.5">
+            {studyMaterialsData.length} materials uploaded
+          </p>
+        </div>
+        <button className="flex items-center gap-2 bg-white/[0.08] hover:bg-white/[0.12] border border-white/[0.10] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-all">
+          <Plus size={15} />
+          Upload Material
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          {
+            label: "Total Materials",
+            value: studyMaterialsData.length,
+            color: "text-white/70",
+            icon: BookOpen,
+          },
+          {
+            label: "Published",
+            value: studyMaterialsData.filter((m) => m.status === "Published")
+              .length,
+            color: "text-green-400",
+            icon: CheckCircle,
+          },
+          {
+            label: "Drafts",
+            value: studyMaterialsData.filter((m) => m.status === "Draft")
+              .length,
+            color: "text-yellow-400",
+            icon: Clock,
+          },
+          {
+            label: "Total Downloads",
+            value: totalDownloads,
+            color: "text-blue-400",
+            icon: Download,
+          },
+        ].map((stat, i) => (
+          <div
+            key={i}
+            className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 flex items-center gap-3"
+          >
+            <div className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0">
+              <stat.icon size={16} className={stat.color} />
+            </div>
+            <div>
+              <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+              <p className="text-white/30 text-xs">{stat.label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex items-center gap-2 flex-1 bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-2.5">
+          <Search size={14} className="text-white/25 shrink-0" />
+          <input
+            type="text"
+            placeholder="Search by title or subject..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="bg-transparent text-sm text-white placeholder:text-white/20 outline-none w-full"
+          />
+        </div>
+        <select
+          value={classFilter}
+          onChange={(e) => {
+            setClassFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
+        >
+          <option value="All" className="bg-[#0a0a0f]">
+            All Classes
+          </option>
+          {classOptions.map((c) => (
+            <option key={c} value={c} className="bg-[#0a0a0f]">
+              Class {c}
+            </option>
+          ))}
+        </select>
+        <select
+          value={typeFilter}
+          onChange={(e) => {
+            setTypeFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
+        >
+          {types.map((t) => (
+            <option key={t} value={t} className="bg-[#0a0a0f]">
+              {t === "All" ? "All Types" : t}
+            </option>
+          ))}
+        </select>
+        <select
+          value={statusFilter}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
+        >
+          {["All", "Published", "Draft"].map((s) => (
+            <option key={s} value={s} className="bg-[#0a0a0f]">
+              {s === "All" ? "All Statuses" : s}
+            </option>
+          ))}
+        </select>
+        <div className="flex items-center bg-white/[0.03] border border-white/[0.06] rounded-xl p-1">
+          <button
+            onClick={() => setViewMode("grid")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${viewMode === "grid" ? "bg-white/[0.08] text-white" : "text-white/30 hover:text-white/60"}`}
+          >
+            Grid
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${viewMode === "list" ? "bg-white/[0.08] text-white" : "text-white/30 hover:text-white/60"}`}
+          >
+            List
+          </button>
+        </div>
+      </div>
+
+      {/* Grid View */}
+      {viewMode === "grid" && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {paginated.length > 0 ? (
+            paginated.map((mat) => {
+              const TypeIcon = typeIcon[mat.type] || File;
+              return (
+                <div
+                  key={mat.id}
+                  className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5 hover:bg-white/[0.05] transition-all group"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
+                      <TypeIcon size={18} className="text-white/40" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${typeStyle[mat.type]}`}
+                      >
+                        {mat.type}
+                      </span>
+                      <span
+                        className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${statusStyle[mat.status]}`}
+                      >
+                        {mat.status}
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="text-white/80 font-semibold text-sm mb-1">
+                    {mat.title}
+                  </h3>
+                  <p className="text-white/30 text-xs mb-4">
+                    {mat.subject} · {mat.class}
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {[
+                      { label: "Size", value: mat.size },
+                      { label: "Downloads", value: mat.downloads },
+                      { label: "Uploaded", value: mat.uploaded.split(",")[0] },
+                    ].map((stat, i) => (
+                      <div
+                        key={i}
+                        className="bg-white/[0.03] border border-white/[0.04] rounded-lg px-2 py-2 text-center"
+                      >
+                        <p className="text-white/60 text-xs font-semibold truncate">
+                          {stat.value}
+                        </p>
+                        <p className="text-white/25 text-[10px] mt-0.5">
+                          {stat.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-white/20 text-xs mb-3">{mat.teacher}</p>
+                  <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button className="flex-1 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-white/40 hover:text-white/70 text-xs transition-all flex items-center justify-center gap-1">
+                      <Eye size={12} /> View
+                    </button>
+                    <button className="flex-1 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-white/40 hover:text-white/70 text-xs transition-all flex items-center justify-center gap-1">
+                      <Download size={12} /> Download
+                    </button>
+                    <button className="flex-1 py-1.5 rounded-lg bg-red-500/[0.06] hover:bg-red-500/[0.12] border border-red-500/[0.15] text-red-400/60 hover:text-red-400 text-xs transition-all flex items-center justify-center gap-1">
+                      <Trash2 size={12} /> Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="col-span-3 py-12 text-center">
+              <Archive size={32} className="text-white/10 mx-auto mb-3" />
+              <p className="text-white/25 text-sm">No materials found</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* List View */}
+      {viewMode === "list" && (
+        <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-white/[0.06]">
+                  {[
+                    "Material",
+                    "Subject",
+                    "Class",
+                    "Teacher",
+                    "Size",
+                    "Downloads",
+                    "Type",
+                    "Status",
+                    "Actions",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="text-left text-[11px] font-semibold text-white/25 uppercase tracking-wider px-5 py-3.5"
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.04]">
+                {paginated.length > 0 ? (
+                  paginated.map((mat) => {
+                    const TypeIcon = typeIcon[mat.type] || File;
+                    return (
+                      <tr
+                        key={mat.id}
+                        className="hover:bg-white/[0.02] transition-colors group"
+                      >
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
+                              <TypeIcon size={13} className="text-white/40" />
+                            </div>
+                            <p className="text-white/80 text-sm font-medium">
+                              {mat.title}
+                            </p>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="text-white/50 text-sm">
+                            {mat.subject}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="text-white/40 text-sm">
+                            {mat.class}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="text-white/40 text-sm">
+                            {mat.teacher.split(" ").slice(-1)}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="text-white/40 text-sm">
+                            {mat.size}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-1.5">
+                            <Download size={12} className="text-white/25" />
+                            <span className="text-white/50 text-sm">
+                              {mat.downloads}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span
+                            className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${typeStyle[mat.type]}`}
+                          >
+                            {mat.type}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span
+                            className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${statusStyle[mat.status]}`}
+                          >
+                            {mat.status}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/70 transition-all">
+                              <Eye size={13} />
+                            </button>
+                            <button className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/70 transition-all">
+                              <Download size={13} />
+                            </button>
+                            <button className="w-7 h-7 rounded-lg bg-red-500/[0.06] hover:bg-red-500/[0.12] border border-red-500/[0.15] flex items-center justify-center text-red-400/60 hover:text-red-400 transition-all">
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={9} className="px-5 py-12 text-center">
+                      <Archive
+                        size={32}
+                        className="text-white/10 mx-auto mb-3"
+                      />
+                      <p className="text-white/25 text-sm">
+                        No materials found
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between px-5 py-3.5 border-t border-white/[0.06]">
+            <p className="text-white/25 text-xs">
+              Showing{" "}
+              {Math.min((currentPage - 1) * perPage + 1, filtered.length)}–
+              {Math.min(currentPage * perPage, filtered.length)} of{" "}
+              {filtered.length} materials
+            </p>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft size={13} />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-7 h-7 rounded-lg border text-xs font-medium transition-all ${currentPage === i + 1 ? "bg-white/[0.10] border-white/[0.15] text-white" : "bg-white/[0.04] border-white/[0.06] text-white/40 hover:bg-white/[0.08]"}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight size={13} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default StudyMaterialsPage;

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Bell, Search, LogOut, User, Menu, Clock } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 
-
 const Topbar = ({ setMobileOpen }) => {
   const { user, role, handleLogout } = useAuth();
   const navigate = useNavigate();
@@ -57,7 +56,6 @@ const Topbar = ({ setMobileOpen }) => {
 
       {/* Live Clock */}
       <div className="hidden md:flex items-center gap-2 bg-white/[0.04] border border-white/[0.06] rounded-xl px-3 py-2">
-       
         <div className="text-center">
           <p className="text-white/70 text-xs font-mono font-medium leading-none">
             {formattedTime}

@@ -1,10 +1,36 @@
 import React, { useState } from "react";
 import {
-  Search, Download, CheckCircle, XCircle, Clock,
-  ChevronLeft, ChevronRight, Calendar, Filter,
-  UserCheck, Users, TrendingUp, AlertCircle,
+  Search,
+  Download,
+  CheckCircle,
+  XCircle,
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  Filter,
+  UserCheck,
+  Users,
+  TrendingUp,
+  AlertCircle,
 } from "lucide-react";
 import { studentsData, classOptions } from "../../constants/dummyData";
+
+const datePickerStyle = `
+  input[type="date"] {
+    color-scheme: light;
+  }
+  
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+  
+  input[type="date"]::-webkit-outer-spin-button,
+  input[type="date"]::-webkit-inner-spin-button {
+    display: none;
+  }
+`;
 
 // // ── Sample Data ──────────────────────────────────────────
 // const studentsData = [
@@ -32,23 +58,27 @@ const statusStyle = {
 const AttendancePage = () => {
   const [selectedClass, setSelectedClass] = useState("10-A");
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0],
   );
   const [search, setSearch] = useState("");
   const [attendance, setAttendance] = useState(
-    Object.fromEntries(studentsData.map((s) => [s.id, "Present"]))
+    Object.fromEntries(studentsData.map((s) => [s.id, "Present"])),
   );
   const [saved, setSaved] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 6;
 
-  const filtered = studentsData.filter((s) =>
-    s.name.toLowerCase().includes(search.toLowerCase()) ||
-    s.rollNo.includes(search)
+  const filtered = studentsData.filter(
+    (s) =>
+      s.name.toLowerCase().includes(search.toLowerCase()) ||
+      s.rollNo.includes(search),
   );
 
   const totalPages = Math.ceil(filtered.length / perPage);
-  const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
+  const paginated = filtered.slice(
+    (currentPage - 1) * perPage,
+    currentPage * perPage,
+  );
 
   const setStatus = (id, status) => {
     setAttendance((prev) => ({ ...prev, [id]: status }));
@@ -69,16 +99,21 @@ const AttendancePage = () => {
     Leave: Object.values(attendance).filter((v) => v === "Leave").length,
   };
 
-  const attendanceRate = Math.round((counts.Present / studentsData.length) * 100);
+  const attendanceRate = Math.round(
+    (counts.Present / studentsData.length) * 100,
+  );
 
   return (
     <div className="space-y-5">
+      <style>{datePickerStyle}</style>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white">Attendance</h1>
-          <p className="text-white/30 text-sm mt-0.5">Mark and manage daily attendance</p>
+          <p className="text-white/30 text-sm mt-0.5">
+            Mark and manage daily attendance
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -100,12 +135,35 @@ const AttendancePage = () => {
       {/* Stats Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Present", value: counts.Present, color: "text-green-400", icon: CheckCircle },
-          { label: "Absent", value: counts.Absent, color: "text-red-400", icon: XCircle },
-          { label: "Late", value: counts.Late, color: "text-yellow-400", icon: Clock },
-          { label: "Attendance Rate", value: `${attendanceRate}%`, color: "text-white/70", icon: TrendingUp },
+          {
+            label: "Present",
+            value: counts.Present,
+            color: "text-green-400",
+            icon: CheckCircle,
+          },
+          {
+            label: "Absent",
+            value: counts.Absent,
+            color: "text-red-400",
+            icon: XCircle,
+          },
+          {
+            label: "Late",
+            value: counts.Late,
+            color: "text-yellow-400",
+            icon: Clock,
+          },
+          {
+            label: "Attendance Rate",
+            value: `${attendanceRate}%`,
+            color: "text-white/70",
+            icon: TrendingUp,
+          },
         ].map((stat, i) => (
-          <div key={i} className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 flex items-center gap-3">
+          <div
+            key={i}
+            className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 flex items-center gap-3"
+          >
             <div className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0">
               <stat.icon size={16} className={stat.color} />
             </div>
@@ -119,7 +177,6 @@ const AttendancePage = () => {
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
-
         {/* Search */}
         <div className="flex items-center gap-2 flex-1 bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-2.5">
           <Search size={14} className="text-white/25 shrink-0" />
@@ -127,7 +184,10 @@ const AttendancePage = () => {
             type="text"
             placeholder="Search student..."
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             className="bg-transparent text-sm text-white placeholder:text-white/20 outline-none w-full"
           />
         </div>
@@ -139,7 +199,9 @@ const AttendancePage = () => {
           className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
         >
           {classes.map((c) => (
-            <option key={c} value={c} className="bg-[#0a0a0f]">Class {c}</option>
+            <option key={c} value={c} className="bg-[#0a0a0f]">
+              Class {c}
+            </option>
           ))}
         </select>
 
@@ -148,7 +210,7 @@ const AttendancePage = () => {
           type="date"
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
-          className="bg-white/[0.03] border border-white/[0.06] text-white/60 text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
+          className="bg-white/[0.03] border border-white/[0.06] text-white text-sm rounded-xl px-4 py-2.5 outline-none cursor-pointer"
         />
 
         {/* Export */}
@@ -164,7 +226,10 @@ const AttendancePage = () => {
           <p className="text-white/50 text-sm font-medium">
             Class {selectedClass} —{" "}
             {new Date(selectedDate).toLocaleDateString("en-US", {
-              weekday: "long", year: "numeric", month: "long", day: "numeric",
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             })}
           </p>
           <div className="flex items-center gap-2">
@@ -184,35 +249,48 @@ const AttendancePage = () => {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/[0.06]">
-                {["Student", "Roll No", "Status", "Mark Attendance"].map((h) => (
-                  <th key={h} className="text-left text-[11px] font-semibold text-white/25 uppercase tracking-wider px-5 py-3.5">
-                    {h}
-                  </th>
-                ))}
+                {["Student", "Roll No", "Status", "Mark Attendance"].map(
+                  (h) => (
+                    <th
+                      key={h}
+                      className="text-left text-[11px] font-semibold text-white/25 uppercase tracking-wider px-5 py-3.5"
+                    >
+                      {h}
+                    </th>
+                  ),
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.04]">
               {paginated.map((s) => (
-                <tr key={s.id} className="hover:bg-white/[0.02] transition-colors">
-
+                <tr
+                  key={s.id}
+                  className="hover:bg-white/[0.02] transition-colors"
+                >
                   {/* Student */}
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-white/60 text-sm font-semibold">
                         {s.avatar}
                       </div>
-                      <p className="text-white/80 text-sm font-medium">{s.name}</p>
+                      <p className="text-white/80 text-sm font-medium">
+                        {s.name}
+                      </p>
                     </div>
                   </td>
 
                   {/* Roll No */}
                   <td className="px-5 py-4">
-                    <span className="text-white/40 text-sm font-mono">{s.rollNo}</span>
+                    <span className="text-white/40 text-sm font-mono">
+                      {s.rollNo}
+                    </span>
                   </td>
 
                   {/* Current Status */}
                   <td className="px-5 py-4">
-                    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${statusStyle[attendance[s.id]]}`}>
+                    <span
+                      className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${statusStyle[attendance[s.id]]}`}
+                    >
                       {attendance[s.id]}
                     </span>
                   </td>
@@ -225,9 +303,10 @@ const AttendancePage = () => {
                           key={status}
                           onClick={() => setStatus(s.id, status)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all
-                            ${attendance[s.id] === status
-                              ? statusStyle[status]
-                              : "bg-white/[0.03] border-white/[0.06] text-white/25 hover:text-white/50 hover:bg-white/[0.06]"
+                            ${
+                              attendance[s.id] === status
+                                ? statusStyle[status]
+                                : "bg-white/[0.03] border-white/[0.06] text-white/25 hover:text-white/50 hover:bg-white/[0.06]"
                             }`}
                         >
                           {status}
@@ -244,7 +323,9 @@ const AttendancePage = () => {
         {/* Pagination */}
         <div className="flex items-center justify-between px-5 py-3.5 border-t border-white/[0.06]">
           <p className="text-white/25 text-xs">
-            Showing {Math.min((currentPage - 1) * perPage + 1, filtered.length)}–{Math.min(currentPage * perPage, filtered.length)} of {filtered.length} students
+            Showing {Math.min((currentPage - 1) * perPage + 1, filtered.length)}
+            –{Math.min(currentPage * perPage, filtered.length)} of{" "}
+            {filtered.length} students
           </p>
           <div className="flex items-center gap-1.5">
             <button
@@ -259,9 +340,10 @@ const AttendancePage = () => {
                 key={i}
                 onClick={() => setCurrentPage(i + 1)}
                 className={`w-7 h-7 rounded-lg border text-xs font-medium transition-all
-                  ${currentPage === i + 1
-                    ? "bg-white/[0.10] border-white/[0.15] text-white"
-                    : "bg-white/[0.04] border-white/[0.06] text-white/40 hover:bg-white/[0.08]"
+                  ${
+                    currentPage === i + 1
+                      ? "bg-white/[0.10] border-white/[0.15] text-white"
+                      : "bg-white/[0.04] border-white/[0.06] text-white/40 hover:bg-white/[0.08]"
                   }`}
               >
                 {i + 1}
