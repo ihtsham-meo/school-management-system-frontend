@@ -1433,6 +1433,57 @@ export const expensesData = [
   { id: 10, title: "Canteen Supplies", category: "Canteen", amount: "₨ 22,000", date: "May 11, 2025", paidTo: "Food Suppliers", paymentMethod: "Cash", status: "Paid", recurring: false },
 ];
 
+// ── QUESTION BANK ─────────────────────────────
+export const questionBankData = [
+  { id: 1, question: "What is the value of π (pi) to two decimal places?", subject: "Mathematics", class: "10-A", type: "MCQ", difficulty: "Easy", marks: 1, answer: "3.14", teacher: "Mrs. Rabia Tariq", topic: "Constants" },
+  { id: 2, question: "State Newton's Second Law of Motion.", subject: "Physics", class: "11-C", type: "Short", difficulty: "Medium", marks: 3, answer: "F = ma", teacher: "Mr. Imran Qureshi", topic: "Laws of Motion" },
+  { id: 3, question: "Write a paragraph about climate change.", subject: "English", class: "12-B", type: "Long", difficulty: "Hard", marks: 10, answer: "Essay type", teacher: "Mr. Tariq Jameel", topic: "Writing" },
+  { id: 4, question: "What is the atomic number of Carbon?", subject: "Chemistry", class: "9-B", type: "MCQ", difficulty: "Easy", marks: 1, answer: "6", teacher: "Ms. Huma Nawaz", topic: "Periodic Table" },
+  { id: 5, question: "Translate the following sentence into Urdu.", subject: "Urdu", class: "8-A", type: "Short", difficulty: "Medium", marks: 2, answer: "Translation", teacher: "Mrs. Nadia Shah", topic: "Translation" },
+  { id: 6, question: "Draw and label the structure of a plant cell.", subject: "Biology", class: "11-C", type: "Long", difficulty: "Hard", marks: 8, answer: "Diagram", teacher: "Ms. Sana Baig", topic: "Cell Biology" },
+  { id: 7, question: "What does HTML stand for?", subject: "Computer Science", class: "12-B", type: "MCQ", difficulty: "Easy", marks: 1, answer: "HyperText Markup Language", teacher: "Mr. Asif Raza", topic: "Web Basics" },
+  { id: 8, question: "When did Pakistan gain independence?", subject: "Pakistan Studies", class: "10-A", type: "MCQ", difficulty: "Easy", marks: 1, answer: "14 August 1947", teacher: "Mr. Tariq Jameel", topic: "History" },
+  { id: 9, question: "Solve the quadratic equation x² + 5x + 6 = 0", subject: "Mathematics", class: "10-A", type: "Short", difficulty: "Medium", marks: 5, answer: "x = -2, x = -3", teacher: "Mrs. Rabia Tariq", topic: "Algebra" },
+  { id: 10, question: "Explain the process of photosynthesis.", subject: "Biology", class: "9-B", type: "Long", difficulty: "Hard", marks: 10, answer: "Essay type", teacher: "Ms. Sana Baig", topic: "Plant Biology" },
+];
+
+// ── ADMISSION REQUESTS ────────────────────────
+export const admissionRequestsData = [
+  { id: 1, name: "Hamza Iqbal", father: "Mr. Iqbal", phone: "0300-1112233", email: "hamza@gmail.com", applyingFor: "Class 6", requestDate: "May 01, 2025", documents: true, status: "Under Review", avatar: "H" },
+  { id: 2, name: "Zoya Mirza", father: "Mr. Mirza", phone: "0301-2223344", email: "zoya@gmail.com", applyingFor: "Class 9", requestDate: "May 02, 2025", documents: false, status: "Documents Pending", avatar: "Z" },
+  { id: 3, name: "Umer Farhan", father: "Mr. Farhan", phone: "0302-3334455", email: "umer@gmail.com", applyingFor: "Class 1", requestDate: "May 03, 2025", documents: true, status: "Approved", avatar: "U" },
+  { id: 4, name: "Mahnoor Ali", father: "Mr. Ali", phone: "0303-4445566", email: "mahnoor@gmail.com", applyingFor: "Class 7", requestDate: "May 04, 2025", documents: true, status: "Rejected", avatar: "M" },
+  { id: 5, name: "Daniyal Khan", father: "Mr. Khan", phone: "0304-5556677", email: "daniyal@gmail.com", applyingFor: "Class 10", requestDate: "May 05, 2025", documents: false, status: "Documents Pending", avatar: "D" },
+  { id: 6, name: "Areeba Shah", father: "Mr. Shah", phone: "0305-6667788", email: "areeba@gmail.com", applyingFor: "Class 3", requestDate: "May 06, 2025", documents: true, status: "Under Review", avatar: "A" },
+];
+
+// ── INQUIRY PIPELINE ──────────────────────────
+export const inquiryPipelineData = [
+  { id: 1, name: "Hamza Iqbal", father: "Mr. Iqbal", phone: "0300-1112233", applyingFor: "Class 6", source: "Walk-in", date: "May 01", stage: "New Inquiry", avatar: "H", priority: "High" },
+  { id: 2, name: "Zoya Mirza", father: "Mr. Mirza", phone: "0301-2223344", applyingFor: "Class 9", source: "Website", date: "May 02", stage: "Contacted", avatar: "Z", priority: "Medium" },
+  { id: 3, name: "Umer Farhan", father: "Mr. Farhan", phone: "0302-3334455", applyingFor: "Class 1", source: "Referral", date: "May 03", stage: "Visited", avatar: "U", priority: "High" },
+  { id: 4, name: "Mahnoor Ali", father: "Mr. Ali", phone: "0303-4445566", applyingFor: "Class 7", source: "Social Media", date: "May 04", stage: "Enrolled", avatar: "M", priority: "Low" },
+  { id: 5, name: "Daniyal Khan", father: "Mr. Khan", phone: "0304-5556677", applyingFor: "Class 10", source: "Walk-in", date: "May 05", stage: "New Inquiry", avatar: "D", priority: "Medium" },
+  { id: 6, name: "Areeba Shah", father: "Mr. Shah", phone: "0305-6667788", applyingFor: "Class 3", source: "Website", date: "May 06", stage: "Contacted", avatar: "A", priority: "High" },
+  { id: 7, name: "Saad Butt", father: "Mr. Butt", phone: "0306-7778899", applyingFor: "Class 8", source: "Referral", date: "May 07", stage: "Visited", avatar: "S", priority: "Medium" },
+  { id: 8, name: "Hina Raza", father: "Mr. Raza", phone: "0307-8889900", applyingFor: "Class 5", source: "Walk-in", date: "May 08", stage: "New Inquiry", avatar: "H", priority: "Low" },
+  { id: 9, name: "Talha Nawaz", father: "Mr. Nawaz", phone: "0308-9990011", applyingFor: "Class 11", source: "Website", date: "May 09", stage: "Enrolled", avatar: "T", priority: "High" },
+  { id: 10, name: "Saba Javed", father: "Mr. Javed", phone: "0309-0001122", applyingFor: "Class 2", source: "Social Media", date: "May 10", stage: "Contacted", avatar: "S", priority: "Medium" },
+];
+
+// ── STUDENT PROMOTIONS ────────────────────────
+export const promotionsData = [
+  { id: 1, name: "Ahmed Khan", rollNo: "2024-001", currentClass: "9-A", promoteToClass: "10-A", grade: "A+", percentage: 92, status: "Promoted", avatar: "A" },
+  { id: 2, name: "Sara Ali", rollNo: "2024-002", currentClass: "9-B", promoteToClass: "10-B", grade: "A", percentage: 85, status: "Promoted", avatar: "S" },
+  { id: 3, name: "Usman Tariq", rollNo: "2024-003", currentClass: "9-A", promoteToClass: "10-A", grade: "B+", percentage: 76, status: "Pending", avatar: "U" },
+  { id: 4, name: "Fatima Noor", rollNo: "2024-004", currentClass: "9-B", promoteToClass: "10-B", grade: "C", percentage: 55, status: "Detained", avatar: "F" },
+  { id: 5, name: "Bilal Hassan", rollNo: "2024-005", currentClass: "9-A", promoteToClass: "10-A", grade: "A", percentage: 88, status: "Promoted", avatar: "B" },
+  { id: 6, name: "Ayesha Malik", rollNo: "2024-006", currentClass: "9-B", promoteToClass: "10-B", grade: "A+", percentage: 95, status: "Promoted", avatar: "A" },
+  { id: 7, name: "Zain Ahmed", rollNo: "2024-007", currentClass: "9-A", promoteToClass: "10-A", grade: "B", percentage: 70, status: "Pending", avatar: "Z" },
+  { id: 8, name: "Hira Baig", rollNo: "2024-008", currentClass: "9-B", promoteToClass: "10-B", grade: "D", percentage: 45, status: "Detained", avatar: "H" },
+  { id: 9, name: "Omar Farooq", rollNo: "2024-009", currentClass: "9-A", promoteToClass: "10-A", grade: "A", percentage: 87, status: "Promoted", avatar: "O" },
+  { id: 10, name: "Nadia Hussain", rollNo: "2024-010", currentClass: "9-B", promoteToClass: "10-B", grade: "B+", percentage: 78, status: "Pending", avatar: "N" },
+];
 export const feeStatusOptions = ["Paid", "Pending", "Overdue"];
 export const staffStatusOptions = ["Active", "On Leave", "Inactive"];
 export const genderOptions = ["Male", "Female"];

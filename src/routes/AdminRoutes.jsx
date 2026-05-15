@@ -26,6 +26,11 @@ import MessagesPage from "../pages/messages/MessagesPage";
 import StudyMaterialsPage from "../pages/studymaterials/StudyMaterialsPage";
 import OnlineClassesPage from "../pages/onlineclasses/OnlineClassesPage";
 import ExpensesPage from "../pages/expenses/ExpensesPage";
+import QuestionBankPage from "../pages/questionbank/QuestionBankPage";
+import HelpPage from "../pages/help/HelpPage";
+import AdmissionRequestsPage from "../pages/admissions/AdmissionRequestsPage"
+import InquiryPipelinePage from "../pages/admissions/InquiryPipelinePage"
+import PromotionsPage from "../pages/students/PromotionsPage"
 
 const AdminRoutes = () => {
   return (
@@ -59,6 +64,11 @@ const AdminRoutes = () => {
         <Route path="study-materials" element={<StudyMaterialsPage />} />
         <Route path="online-classes" element={<OnlineClassesPage />} />
         <Route path="expenses" element={<ExpensesPage />} />
+        <Route path="question-bank" element={<QuestionBankPage />} />
+        <Route path="help" element={<HelpPage />} />
+        <Route path="admissions/requests" element={<AdmissionRequestsPage />} />
+        <Route path="admissions/inquiries" element={<InquiryPipelinePage />} />
+        <Route path="students/promotions" element={<PromotionsPage />} />
       </Route>
     </Routes>
   );
